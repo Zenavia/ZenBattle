@@ -1,0 +1,6 @@
+name: ZenBattle
+version: '${version}'
+
+main: com.zenavia.zenBattle.ZenBattle
+api-version: '26.2'
+load: POSTWORLD
