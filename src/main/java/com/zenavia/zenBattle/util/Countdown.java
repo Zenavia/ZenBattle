@@ -34,6 +34,10 @@ public class Countdown {
         }.runTaskTimer(plugin, 0L, 20L);
     }
 
+    public int getSecondsLeft() {
+        return secondsLeft;
+    }
+
     public void cancel() {
         if (task != null) task.cancel();
     }

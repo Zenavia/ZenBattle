@@ -1,7 +1,12 @@
 name: ZenBattle
-version: '${version}'
+version: '1.0.0'
 
 main: com.zenavia.zenBattle.ZenBattle
+description: Plugin pour le serveur Zenavia, minijeu simple de destruction de Beacon.
+author: HyGoww
+website: www.hygoww.fr
+prefix: ZENBATTLE
+depend: [My_Worlds]
 api-version: '26.2'
 load: POSTWORLD
 commands:

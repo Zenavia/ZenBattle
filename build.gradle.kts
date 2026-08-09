@@ -32,3 +32,7 @@ tasks {
         }
     }
 }
+
+tasks.withType<Jar> {
+    archiveFileName.set("ZenBattle.jar")
+}
