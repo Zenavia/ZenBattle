@@ -34,6 +34,8 @@ public class BeaconBreakListener implements Listener {
 
         Team winner = game.getOtherTeam(target);
         Bukkit.broadcast(Component.text("L'équipe " + winner.getName() + " a gagné en détruisant le beacon adverse !"));
+
+        gameManager.onGameEnding();
     }
 
     private Team matchTeamByBeacon(Game game, Location broken) {

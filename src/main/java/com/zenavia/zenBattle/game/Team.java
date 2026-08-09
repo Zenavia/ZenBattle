@@ -47,4 +47,10 @@ public class Team {
     public void setBeaconLocation(Location location) {
         this.beaconLocation = location;
     }
+
+    public void reset(){
+        players.clear();
+        beaconAlive = true;
+        beaconLocation = null;
+    }
 }

@@ -34,7 +34,6 @@ public class ZenBattleCommand implements CommandExecutor {
         }
 
         if (args[0].equalsIgnoreCase("join")) {
-            Arena arena = arenaManager.getOrCreateArena();
             gameManager.addPlayerToGame(player);
             return true;
         }
