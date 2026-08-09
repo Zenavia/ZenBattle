@@ -6,8 +6,11 @@ import com.zenavia.zenBattle.command.ZenBattleCommand;
 import com.zenavia.zenBattle.config.*;
 import com.zenavia.zenBattle.config.ConfigManager;
 import com.zenavia.zenBattle.game.GameManager;
+import com.zenavia.zenBattle.kits.KitManager;
+import com.zenavia.zenBattle.kits.KitMenu;
 import com.zenavia.zenBattle.listener.BeaconDamageListener;
 import com.zenavia.zenBattle.listener.FriendlyFireListener;
+import com.zenavia.zenBattle.listener.KitMenuListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -29,13 +32,17 @@ public final class ZenBattle extends JavaPlugin {
         BeaconHealthBarManager healthBarManager = new BeaconHealthBarManager();
         GameFeedback feedback = new GameFeedback(messageManager, titleManager, healthBarManager, configManager.getSettings());
 
+        KitMenu kitMenu = new KitMenu();
+        KitManager kitManager = new KitManager();
+
         ArenaManager arenaManager = new ArenaManager(configManager, getLogger());
-        GameManager gameManager = new GameManager(this, arenaManager, configManager, feedback);
+        GameManager gameManager = new GameManager(this, arenaManager, configManager, feedback, kitManager, kitMenu);
 
         getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager), this);
         getServer().getPluginManager().registerEvents(new FriendlyFireListener(gameManager), this);
+        getServer().getPluginManager().registerEvents(new KitMenuListener(kitMenu, kitManager), this);
 
-        Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager));
+        Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager, kitMenu));
         Objects.requireNonNull(getCommand("zbreload")).setExecutor(new ReloadCommand(this, configManager, messageManager, gameManager));
     }
 

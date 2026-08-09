@@ -3,6 +3,9 @@ package com.zenavia.zenBattle.game;
 import com.zenavia.zenBattle.arena.Arena;
 import com.zenavia.zenBattle.arena.ArenaManager;
 import com.zenavia.zenBattle.config.*;
+import com.zenavia.zenBattle.kits.Kit;
+import com.zenavia.zenBattle.kits.KitManager;
+import com.zenavia.zenBattle.kits.KitMenu;
 import com.zenavia.zenBattle.util.Countdown;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -17,14 +20,18 @@ public class GameManager {
     private final ConfigManager configManager;
     private final GameFeedback feedback;
     private final Game game;
+    private final KitManager kitManager;
+    private final KitMenu kitMenu;
     private Countdown countdown;
 
-    public GameManager(Plugin plugin, ArenaManager arenaManager, ConfigManager configManager, GameFeedback feedback) {
+    public GameManager(Plugin plugin, ArenaManager arenaManager, ConfigManager configManager, GameFeedback feedback, KitManager kitManager, KitMenu kitMenu) {
         this.plugin = plugin;
         this.arenaManager = arenaManager;
         this.configManager = configManager;
         this.feedback = feedback;
         this.game = new Game(new Team(configManager.getSettings().teamAName(), configManager), new Team(configManager.getSettings().teamBName(), configManager));
+        this.kitManager = kitManager;
+        this.kitMenu = kitMenu;
     }
 
     public Game getGame() {
@@ -50,6 +57,7 @@ public class GameManager {
 
         Team target = teamA.getPlayers().size() <= teamB.getPlayers().size() ? teamA : teamB;
         target.addPlayer(uuid);
+        kitMenu.open(player);
 
         player.teleport(target == teamA ? arena.getSpawnTeamA() : arena.getSpawnTeamB());
         feedback.playerJoined(player, target);
@@ -87,10 +95,30 @@ public class GameManager {
             return;
         }
         Arena arena = arenaOpt.get();
+
+        teleportTeamToSpawn(game.getTeamA(), arena.getSpawnTeamA());
+        teleportTeamToSpawn(game.getTeamB(), arena.getSpawnTeamB());
+
         game.getTeamA().setBeaconLocation(arena.getBeaconTeamA());
         game.getTeamB().setBeaconLocation(arena.getBeaconTeamB());
         feedback.gameStarted();
         breakBarrier(arena);
+    }
+
+    private void teleportTeamToSpawn(Team team, Location spawn) {
+        for (UUID uuid : team.getPlayers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                player.teleport(spawn);
+                applyKit(player);
+            }
+        }
+    }
+
+    private void applyKit(Player player) {
+        Kit kit = kitManager.getKit(player.getUniqueId());
+        player.getInventory().clear();
+        player.getInventory().addItem(kit.buildItems());
     }
 
     public void onGameEnding() {
@@ -115,6 +143,8 @@ public class GameManager {
             Player player = Bukkit.getPlayer(uuid);
             if (player != null) {
                 player.teleport(arena.getLobbySpawn());
+                kitManager.clear(uuid);
+                player.getInventory().clear();
             }
         }
         rebuildBarrier(arena);
@@ -122,6 +152,7 @@ public class GameManager {
         game.getTeamA().reset();
         game.getTeamB().reset();
         game.setState(GameState.WAITING);
+        kitManager.clearAll();
         feedback.gameReset();
     }
 
