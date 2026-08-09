@@ -20,12 +20,12 @@ public class BeaconDamageListener implements Listener {
 
     private final GameManager gameManager;
     private final GameFeedback feedback;
-    private final GameSettings settings;
+    private final ConfigManager configManager;
 
-    public BeaconDamageListener(GameManager gameManager, GameFeedback feedback, GameSettings settings) {
+    public BeaconDamageListener(GameManager gameManager, GameFeedback feedback, ConfigManager configManager) {
         this.gameManager = gameManager;
         this.feedback = feedback;
-        this.settings = settings;
+        this.configManager = configManager;
     }
 
     @EventHandler
@@ -50,7 +50,7 @@ public class BeaconDamageListener implements Listener {
             return;
         }
 
-        boolean destroyed = target.damageBeacon(settings.damagePerHit());
+        boolean destroyed = target.damageBeacon(configManager.getSettings().damagePerHit());
         feedback.beaconHit(target, clicked);
 
         if (destroyed) {

@@ -13,17 +13,17 @@ import java.util.*;
 public class GameManager {
     private final Plugin plugin;
     private final ArenaManager arenaManager;
-    private final GameSettings settings;
+    private final ConfigManager configManager;
     private final GameFeedback feedback;
     private final Game game;
     private Countdown countdown;
 
-    public GameManager(Plugin plugin, ArenaManager arenaManager, GameSettings settings, GameFeedback feedback) {
+    public GameManager(Plugin plugin, ArenaManager arenaManager, ConfigManager configManager, GameFeedback feedback) {
         this.plugin = plugin;
         this.arenaManager = arenaManager;
-        this.settings = settings;
+        this.configManager = configManager;
         this.feedback = feedback;
-        this.game = new Game(new Team("A", settings), new Team("B", settings));
+        this.game = new Game(new Team(configManager.getSettings().teamAName(), configManager), new Team(configManager.getSettings().teamBName(), configManager));
     }
 
     public Game getGame() {
@@ -52,15 +52,15 @@ public class GameManager {
 
         player.teleport(target == teamA ? arena.getSpawnTeamA() : arena.getSpawnTeamB());
         feedback.playerJoined(player, target);
-        if (allPlayers().size() < settings.minPlayersToStart()) {
-            feedback.notEnoughPlayer(player);
+        if (allPlayers().size() < configManager.getSettings().minPlayersToStart()) {
+            feedback.notEnoughPlayer(game);
         }
 
         checkStartConditions();
     }
 
     private void checkStartConditions() {
-        if (game.getState() == GameState.WAITING && game.totalPlayers() >= settings.minPlayersToStart()) {
+        if (game.getState() == GameState.WAITING && game.totalPlayers() >= configManager.getSettings().minPlayersToStart()) {
             startCountdown();
         }
     }
@@ -68,7 +68,7 @@ public class GameManager {
     private void startCountdown() {
         game.setState(GameState.STARTING);
 
-        countdown = new Countdown(plugin, settings.countdownSeconds(),
+        countdown = new Countdown(plugin, configManager.getSettings().countdownSeconds(),
                 () -> {
                     feedback.countdownStarted(countdown.getSecondsLeft());
                 },
@@ -92,7 +92,7 @@ public class GameManager {
     }
 
     public void onGameEnding() {
-        Countdown endCountdown = new Countdown(plugin, settings.endDelaySeconds(),
+        Countdown endCountdown = new Countdown(plugin, configManager.getSettings().endDelaySeconds(),
                 () -> {
                 },
                 this::resetGame

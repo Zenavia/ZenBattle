@@ -8,4 +8,5 @@ public record GameSettings(
         int damagePerHit,
         String teamAName,
         String teamBName
-) {}
+) {
+}

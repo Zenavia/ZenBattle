@@ -1,10 +1,11 @@
 package com.zenavia.zenBattle;
 
 import com.zenavia.zenBattle.arena.ArenaManager;
+import com.zenavia.zenBattle.command.ReloadCommand;
 import com.zenavia.zenBattle.command.ZenBattleCommand;
 import com.zenavia.zenBattle.config.*;
+import com.zenavia.zenBattle.config.ConfigManager;
 import com.zenavia.zenBattle.game.GameManager;
-import com.zenavia.zenBattle.listener.BeaconBreakListener;
 import com.zenavia.zenBattle.listener.BeaconDamageListener;
 import com.zenavia.zenBattle.listener.FriendlyFireListener;
 import org.bukkit.Bukkit;
@@ -29,12 +30,13 @@ public final class ZenBattle extends JavaPlugin {
         GameFeedback feedback = new GameFeedback(messageManager, titleManager, healthBarManager, configManager.getSettings());
 
         ArenaManager arenaManager = new ArenaManager(configManager, getLogger());
-        GameManager gameManager = new GameManager(this, arenaManager, configManager.getSettings(), feedback);
+        GameManager gameManager = new GameManager(this, arenaManager, configManager, feedback);
 
-        getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager.getSettings()), this);
+        getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager), this);
         getServer().getPluginManager().registerEvents(new FriendlyFireListener(gameManager), this);
 
         Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager));
+        Objects.requireNonNull(getCommand("zbreload")).setExecutor(new ReloadCommand(this, configManager, messageManager, gameManager));
     }
 
     @Override

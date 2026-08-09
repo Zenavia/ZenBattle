@@ -14,4 +14,8 @@ commands:
     description: Main command for ZenBattle plugin
     usage: /zb <subcommand>
     aliases: [zenbattle, zbattle]
-
+  zbreload:
+    description: Recharge la configuration ZenBattle
+    permissions:
+      zenbattle.reload:
+        default: op

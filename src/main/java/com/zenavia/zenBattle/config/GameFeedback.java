@@ -1,5 +1,6 @@
 package com.zenavia.zenBattle.config;
 
+import com.zenavia.zenBattle.game.Game;
 import com.zenavia.zenBattle.game.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -7,7 +8,11 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameFeedback {
     private final MessageManager messages;
@@ -36,8 +41,8 @@ public class GameFeedback {
         player.sendMessage(messages.get("game.no-arena"));
     }
 
-    public void notEnoughPlayer(Player player) {
-        Bukkit.broadcast(messages.get("game.not-enough-players", Map.of("min-players", String.valueOf(settings.minPlayersToStart()), "max-players", "2")));
+    public void notEnoughPlayer(Game game) {
+        Bukkit.broadcast(messages.get("game.not-enough-players", Map.of("min-players", allPlayers(game).toString(), "max-players", String.valueOf(settings.minPlayersToStart()))));
     }
 
     public void ownBeaconDenied(Player player) {
@@ -81,5 +86,18 @@ public class GameFeedback {
     public void gameReset() {
         healthBars.clearAll(Bukkit.getOnlinePlayers());
         Bukkit.broadcast(messages.get("game.reset"));
+    }
+
+    private AtomicInteger allPlayers(Game game) {
+        Set<UUID> all = new HashSet<>(game.getTeamA().getPlayers());
+        all.addAll(game.getTeamB().getPlayers());
+        AtomicInteger count = new AtomicInteger();
+        all.forEach(uuid -> {;
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                count.getAndIncrement();
+            }
+        });
+        return count;
     }
 }

@@ -35,4 +35,10 @@ public class MessageManager {
     public Component get(String path) {
         return get(path, Map.of());
     }
+
+    public void reload(Plugin plugin) {
+        File file = new File(plugin.getDataFolder(), "messages.yml");
+        this.messages = YamlConfiguration.loadConfiguration(file);
+        this.prefix = messages.getString("prefix", "");
+    }
 }

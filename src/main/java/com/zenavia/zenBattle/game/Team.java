@@ -1,6 +1,6 @@
 package com.zenavia.zenBattle.game;
 
-import com.zenavia.zenBattle.config.GameSettings;
+import com.zenavia.zenBattle.config.ConfigManager;
 import org.bukkit.Location;
 
 import java.util.HashSet;
@@ -9,16 +9,16 @@ import java.util.UUID;
 
 public class Team {
     private final String name;
-    private final GameSettings settings;
+    private final ConfigManager configManager;
     private final Set<UUID> players = new HashSet<>();
     private int beaconHealth;
     private boolean beaconAlive = true;
     private Location beaconLocation;
 
-    public Team(String name, GameSettings settings) {
+    public Team(String name, ConfigManager configManager) {
         this.name = name;
-        this.settings = settings;
-        this.beaconHealth = settings.beaconMaxHealth();
+        this.configManager = configManager;
+        this.beaconHealth = configManager.getSettings().beaconMaxHealth();
     }
 
     public void addPlayer(UUID uuid) {
@@ -69,6 +69,6 @@ public class Team {
         players.clear();
         beaconAlive = true;
         beaconLocation = null;
-        beaconHealth = settings.beaconMaxHealth();
+        beaconHealth = configManager.getSettings().beaconMaxHealth();
     }
 }

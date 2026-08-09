@@ -87,4 +87,8 @@ public class ConfigManager {
         float pitch = (float) yaml.getDouble(path + ".pitch", 0);
         return new Location(world, x, y, z, yaw, pitch);
     }
+
+    public void reload() {
+        loadAll();
+    }
 }
