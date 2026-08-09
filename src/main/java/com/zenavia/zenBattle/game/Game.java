@@ -48,4 +48,9 @@ public class Game {
     public int totalPlayersTeamB(){
         return teamB.getPlayers().size();
     }
+
+    public void onBeaconDestroyed(Team destroyedTeam){
+        destroyedTeam.destroyBeacon();
+        setState(GameState.ENDING);
+    }
 }

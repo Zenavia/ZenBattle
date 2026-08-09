@@ -67,6 +67,9 @@ public class GameManager {
 
     private void startGame(){
         game.setState(GameState.PLAYING);
+        Arena arena = arenaManager.getOrCreateArena();
+        game.getTeamA().setBeaconLocation(arena.getBeaconTeamA());
+        game.getTeamB().setBeaconLocation(arena.getBeaconTeamB());
         Bukkit.broadcast(Component.text("La partie commence ! Bonne chance !"));
     }
 }

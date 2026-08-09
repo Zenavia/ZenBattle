@@ -4,6 +4,7 @@ import com.zenavia.zenBattle.arena.Arena;
 import com.zenavia.zenBattle.arena.ArenaManager;
 import com.zenavia.zenBattle.command.ZenBattleCommand;
 import com.zenavia.zenBattle.game.GameManager;
+import com.zenavia.zenBattle.listener.BeaconBreakListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -18,6 +19,7 @@ public final class ZenBattle extends JavaPlugin {
         getLogger().info("Liste des mondes : " + Bukkit.getWorlds());
         ArenaManager arenaManager = new ArenaManager();
         GameManager gameManager = new GameManager(this, arenaManager);
+        getServer().getPluginManager().registerEvents(new BeaconBreakListener(gameManager), this);
         Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager, arenaManager));
     }
 
