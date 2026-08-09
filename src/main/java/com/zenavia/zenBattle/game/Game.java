@@ -1,5 +1,7 @@
 package com.zenavia.zenBattle.game;
 
+import java.util.UUID;
+
 public class Game {
     // Instance de partie en cours
     private final Team teamA;
@@ -44,5 +46,11 @@ public class Game {
     public void onBeaconDestroyed(Team destroyedTeam){
         destroyedTeam.destroyBeacon();
         setState(GameState.ENDING);
+    }
+
+    public Team getTeamOfPlayer(UUID uuid) {
+        if (teamA.getPlayers().contains(uuid)) return teamA;
+        if (teamB.getPlayers().contains(uuid)) return teamB;
+        return null;
     }
 }

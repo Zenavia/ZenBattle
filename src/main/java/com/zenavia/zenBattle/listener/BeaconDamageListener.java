@@ -43,7 +43,7 @@ public class BeaconDamageListener implements Listener {
         if (target == null) return;
 
         Player player = event.getPlayer();
-        Team playerTeam = getTeamOfPlayer(game, player.getUniqueId());
+        Team playerTeam = game.getTeamOfPlayer(player.getUniqueId());
         if (playerTeam == null) return; // spectateur/hors partie
         if (playerTeam == target) {
             player.sendMessage("Tu ne peux pas attaquer ton propre beacon !");
@@ -74,11 +74,5 @@ public class BeaconDamageListener implements Listener {
                 && a.getBlockX() == b.getBlockX()
                 && a.getBlockY() == b.getBlockY()
                 && a.getBlockZ() == b.getBlockZ();
-    }
-
-    private Team getTeamOfPlayer(Game game, UUID uuid) {
-        if (game.getTeamA().getPlayers().contains(uuid)) return game.getTeamA();
-        if (game.getTeamB().getPlayers().contains(uuid)) return game.getTeamB();
-        return null;
     }
 }

@@ -30,8 +30,8 @@ public class FriendlyFireListener implements Listener {
         Game game = gameManager.getGame();
         if (game.getState() != GameState.PLAYING) return;
 
-        Team attackerTeam = getTeamOfPlayer(game, attacker.getUniqueId());
-        Team victimTeam = getTeamOfPlayer(game, victim.getUniqueId());
+        Team attackerTeam = game.getTeamOfPlayer(attacker.getUniqueId());
+        Team victimTeam = game.getTeamOfPlayer(victim.getUniqueId());
 
         if (attackerTeam == null || victimTeam == null) return;
         if (attackerTeam == victimTeam) {
@@ -43,12 +43,6 @@ public class FriendlyFireListener implements Listener {
         if (event.getDamager() instanceof Player player) return player;
         if (event.getDamager() instanceof Projectile projectile
                 && projectile.getShooter() instanceof Player player) return player;
-        return null;
-    }
-
-    private Team getTeamOfPlayer(Game game, UUID uuid) {
-        if (game.getTeamA().getPlayers().contains(uuid)) return game.getTeamA();
-        if (game.getTeamB().getPlayers().contains(uuid)) return game.getTeamB();
         return null;
     }
 }
