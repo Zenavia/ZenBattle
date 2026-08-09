@@ -1,11 +1,12 @@
 package com.zenavia.zenBattle;
 
-import com.zenavia.zenBattle.arena.Arena;
 import com.zenavia.zenBattle.arena.ArenaManager;
 import com.zenavia.zenBattle.command.ZenBattleCommand;
+import com.zenavia.zenBattle.config.BeaconHealthBarManager;
 import com.zenavia.zenBattle.config.ConfigManager;
+import com.zenavia.zenBattle.config.MessageManager;
+import com.zenavia.zenBattle.config.TitleManager;
 import com.zenavia.zenBattle.game.GameManager;
-import com.zenavia.zenBattle.game.GameSettings;
 import com.zenavia.zenBattle.listener.BeaconBreakListener;
 import com.zenavia.zenBattle.listener.BeaconDamageListener;
 import org.bukkit.Bukkit;
@@ -24,10 +25,14 @@ public final class ZenBattle extends JavaPlugin {
         ConfigManager configManager = new ConfigManager(this);
         configManager.loadAll();
 
+        MessageManager messageManager = new MessageManager(this);
+        TitleManager titleManager = new TitleManager();
+        BeaconHealthBarManager beaconHealthBarManager = new BeaconHealthBarManager();
+
         ArenaManager arenaManager = new ArenaManager(configManager, getLogger());
-        GameManager gameManager = new GameManager(this, arenaManager, configManager.getSettings());
+        GameManager gameManager = new GameManager(this, arenaManager, configManager.getSettings(), messageManager, titleManager, beaconHealthBarManager);
         getServer().getPluginManager().registerEvents(new BeaconBreakListener(gameManager), this);
-        getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, configManager.getSettings()), this);
+        getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, messageManager, titleManager, beaconHealthBarManager, configManager.getSettings()), this);
         Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager));
     }
 

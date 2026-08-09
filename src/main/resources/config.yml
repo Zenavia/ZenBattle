@@ -8,3 +8,5 @@ game:
   countdown-end: 5
   beacon-max-health: 10
   damage-per-hit: 1
+  first-team: "Bleu"
+  second-team: "Rouge"

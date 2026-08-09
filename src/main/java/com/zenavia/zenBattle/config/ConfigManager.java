@@ -1,6 +1,5 @@
 package com.zenavia.zenBattle.config;
 
-import com.zenavia.zenBattle.game.GameSettings;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -30,7 +29,9 @@ public class ConfigManager {
                 config.getInt("game.countdown-seconds", 10),
                 config.getInt("game.end-delay-seconds", 5),
                 config.getInt("game.beacon-max-health", 10),
-                config.getInt("game.damage-per-hit", 1)
+                config.getInt("game.damage-per-hit", 1),
+                config.getString("game.first-team", "Rouge"),
+                config.getString("game.second-team", "Bleu")
         );
     }
 

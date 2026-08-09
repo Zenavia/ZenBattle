@@ -1,0 +1,20 @@
+prefix: "<gradient:#00c6ff:#0072ff>[ZenBattle]</gradient> "
+
+team:
+  joined: "<prefix><green>Tu as rejoint l'équipe <yellow>{team}</yellow></green>"
+  own-beacon-denied: "<prefix><red>Tu ne peux pas attaquer ton propre beacon !</red>"
+
+game:
+  countdown-start: "<prefix><yellow>La partie démarre dans <bold>{seconds}s</bold> !</yellow>"
+  not-enough-players: "<prefix><red>Pas assez de joueurs pour commencer la partie ! <gray>(</gray><white>{min-players}</white><gray>/</gray><yellow>{max-players}</yellow><gray>)</gray></red>"
+  starting: "<prefix><green><bold>La partie commence !</bold></green>"
+  beacon-damaged: "<prefix><gray>Beacon <yellow>{team}</yellow> : <red>{health}</red> PV restants</gray>"
+  beacon-destroyed: "<prefix><gold><bold>L'équipe {team} a gagné !</bold></gold>"
+  reset: "<prefix><gray>La partie a été réinitialisée.</gray>"
+  no-arena: "<prefix><red>Aucune arène n'est configurée pour le moment.</red>"
+  game-already-started: "<prefix><red>La partie a déjà commencé !</red>"
+  back-lobby: "<prefix><green>Partie terminée, retour au lobby.</green>"
+  victory-title: "<gold><bold>VICTOIRE</bold></gold>"
+  victory-subtitle: "<gray>Équipe {team}</gray>"
+  starting-title: "<green><bold>GO !</bold></green>"
+  starting-subtitle: "<gray>Détruisez le beacon adverse</gray>"

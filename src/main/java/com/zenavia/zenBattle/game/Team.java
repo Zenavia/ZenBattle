@@ -1,5 +1,6 @@
 package com.zenavia.zenBattle.game;
 
+import com.zenavia.zenBattle.config.GameSettings;
 import org.bukkit.Location;
 
 import java.util.HashSet;
