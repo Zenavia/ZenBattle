@@ -4,3 +4,9 @@ version: '${version}'
 main: com.zenavia.zenBattle.ZenBattle
 api-version: '26.2'
 load: POSTWORLD
+commands:
+  zb:
+    description: Main command for ZenBattle plugin
+    usage: /zb <subcommand>
+    aliases: [zenbattle, zbattle]
+
