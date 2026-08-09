@@ -41,14 +41,6 @@ public class Game {
         return teamA.getPlayers().size() + teamB.getPlayers().size();
     }
 
-    public int totalPlayersTeamA(){
-        return teamA.getPlayers().size();
-    }
-
-    public int totalPlayersTeamB(){
-        return teamB.getPlayers().size();
-    }
-
     public void onBeaconDestroyed(Team destroyedTeam){
         destroyedTeam.destroyBeacon();
         setState(GameState.ENDING);

@@ -78,9 +78,7 @@ public class GameManager {
 
     public void onGameEnding(){
         Countdown endCountdown = new Countdown(plugin, END_DELAY_SECONDS,
-                () -> {
-                    Bukkit.broadcast(Component.text("Fin de la partie dans " + countdown.getSecondsLeft() + " secondes !"));
-                },
+                () -> {},
                 this::resetGame
         );
         endCountdown.start();

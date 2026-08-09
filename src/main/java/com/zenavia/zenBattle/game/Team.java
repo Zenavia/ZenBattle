@@ -7,9 +7,12 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Team {
+    private static final int BEACON_MAX_HEALTH = 10;
+
     private final String name;
     private final Set<UUID> players = new HashSet<>();
     private boolean beaconAlive = true;
+    private int beaconHealth = BEACON_MAX_HEALTH;
     private Location beaconLocation;
 
     public Team(String name) {
@@ -48,9 +51,22 @@ public class Team {
         this.beaconLocation = location;
     }
 
+    public int getBeaconHealth() { return beaconHealth; }
+
+    public boolean damageBeacon(int amount) {
+        if (!beaconAlive) return false;
+        beaconHealth -= amount;
+        if (beaconHealth <= 0) {
+            beaconAlive = false;
+            return true;
+        }
+        return false;
+    }
+
     public void reset(){
         players.clear();
         beaconAlive = true;
         beaconLocation = null;
+        beaconHealth = BEACON_MAX_HEALTH;
     }
 }
