@@ -7,16 +7,17 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Team {
-    private static final int BEACON_MAX_HEALTH = 10;
-
     private final String name;
+    private final GameSettings settings;
     private final Set<UUID> players = new HashSet<>();
+    private int beaconHealth;
     private boolean beaconAlive = true;
-    private int beaconHealth = BEACON_MAX_HEALTH;
     private Location beaconLocation;
 
-    public Team(String name) {
+    public Team(String name, GameSettings settings) {
         this.name = name;
+        this.settings = settings;
+        this.beaconHealth = settings.beaconMaxHealth();
     }
 
     public void addPlayer(UUID uuid) {
@@ -67,6 +68,6 @@ public class Team {
         players.clear();
         beaconAlive = true;
         beaconLocation = null;
-        beaconHealth = BEACON_MAX_HEALTH;
+        beaconHealth = settings.beaconMaxHealth();
     }
 }

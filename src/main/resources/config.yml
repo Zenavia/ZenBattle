@@ -1,0 +1,10 @@
+# ZENBATTLE - Uniquement réservé aux joueurs du serveur Zenavia.
+# Toute utilisation non autorisée est interdite.
+# Autheur : HyGoww
+
+game:
+  min-players-to-start: 2
+  countdown-start: 10
+  countdown-end: 5
+  beacon-max-health: 10
+  damage-per-hit: 1

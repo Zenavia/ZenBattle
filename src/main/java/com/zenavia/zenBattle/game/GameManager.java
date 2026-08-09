@@ -9,24 +9,22 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
 public class GameManager {
-    // gestion du cycle de vie / plusieurs arènes
-    private static final int MIN_PLAYERS_TO_START = 2;
-    private static final int COUNTDOWN_SECONDS = 10;
-    private static final int END_DELAY_SECONDS = 5;
-
     private final Plugin plugin;
     private final ArenaManager arenaManager;
     private final Game game;
+    private final GameSettings settings;
     private Countdown countdown;
 
-    public GameManager(Plugin plugin, ArenaManager arenaManager) {
+    public GameManager(Plugin plugin, ArenaManager arenaManager, GameSettings settings) {
         this.plugin = plugin;
         this.arenaManager = arenaManager;
-        this.game = new Game(new Team("A"), new Team("B"));
+        this.settings = settings;
+        this.game = new Game(new Team("A", settings), new Team("B", settings));
     }
 
     public Game getGame() {
@@ -34,7 +32,17 @@ public class GameManager {
     }
 
     public void addPlayerToGame(Player player) {
-        Arena arena = arenaManager.getOrCreateArena();
+        Optional<Arena> arenaOpt = arenaManager.getOrCreateArena();
+        if (arenaOpt.isEmpty()) {
+            player.sendMessage("§cAucune arène n'est configurée pour le moment, contactez un Administrateur.");
+            return;
+        }
+        Arena arena = arenaOpt.get();
+
+        if (game.getState() != GameState.WAITING) {
+            player.sendMessage("La partie a déjà commencé.");
+            return;
+        }
 
         UUID uuid = player.getUniqueId();
         Team teamA = game.getTeamA();
@@ -45,24 +53,24 @@ public class GameManager {
 
         player.teleport(target == teamA ? arena.getSpawnTeamA() : arena.getSpawnTeamB());
         player.sendMessage("Tu as rejoint l'équipe " + target.getName());
-        if(allPlayers().size() < MIN_PLAYERS_TO_START){
-            Bukkit.broadcast(Component.text(allPlayers().size() + "/" + MIN_PLAYERS_TO_START + " joueurs dans ZenBattle"));
+        if(allPlayers().size() < settings.minPlayersToStart()){
+            Bukkit.broadcast(Component.text(allPlayers().size() + "/" + settings.minPlayersToStart() + " joueurs dans ZenBattle"));
         }
 
         checkStartConditions();
     }
 
     private void checkStartConditions(){
-        if(game.getState() == GameState.WAITING && game.totalPlayers() >= MIN_PLAYERS_TO_START){
+        if(game.getState() == GameState.WAITING && game.totalPlayers() >= settings.minPlayersToStart()){
             startCountdown();
         }
     }
 
     private void startCountdown(){
         game.setState(GameState.STARTING);
-        Bukkit.broadcast(Component.text("La partie va commencer dans " + COUNTDOWN_SECONDS + " secondes !"));
+        Bukkit.broadcast(Component.text("La partie va commencer dans " + settings.countdownSeconds() + " secondes !"));
 
-        countdown = new Countdown(plugin, COUNTDOWN_SECONDS,
+        countdown = new Countdown(plugin, settings.countdownSeconds(),
                 () -> {
                     Bukkit.broadcast(Component.text("La partie commence dans " + countdown.getSecondsLeft() + " secondes !"));
                 },
@@ -73,14 +81,20 @@ public class GameManager {
 
     private void startGame(){
         game.setState(GameState.PLAYING);
-        Arena arena = arenaManager.getOrCreateArena();
+        Optional<Arena> arenaOpt = arenaManager.getOrCreateArena();
+        if (arenaOpt.isEmpty()) {
+            plugin.getLogger().severe("Impossible de démarrer la partie : aucune arène disponible.");
+            game.setState(GameState.WAITING);
+            return;
+        }
+        Arena arena = arenaOpt.get();
         game.getTeamA().setBeaconLocation(arena.getBeaconTeamA());
         game.getTeamB().setBeaconLocation(arena.getBeaconTeamB());
         Bukkit.broadcast(Component.text("La partie commence ! Bonne chance !"));
     }
 
     public void onGameEnding(){
-        Countdown endCountdown = new Countdown(plugin, END_DELAY_SECONDS,
+        Countdown endCountdown = new Countdown(plugin, settings.endDelaySeconds(),
                 () -> {},
                 this::resetGame
         );
@@ -88,7 +102,14 @@ public class GameManager {
     }
 
     public void resetGame(){
-        Arena arena = arenaManager.getOrCreateArena();
+        Optional<Arena> arenaOpt = arenaManager.getOrCreateArena();
+        if (arenaOpt.isEmpty()) {
+            plugin.getLogger().severe("Impossible de reset la partie : aucune arène disponible.");
+            game.setState(GameState.WAITING);
+            return;
+        }
+        Arena arena = arenaOpt.get();
+
         for(UUID uuid : allPlayers()){
             Player player = Bukkit.getPlayer(uuid);
             if(player != null){

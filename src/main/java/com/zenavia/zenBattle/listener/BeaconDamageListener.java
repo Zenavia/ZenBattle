@@ -1,9 +1,6 @@
 package com.zenavia.zenBattle.listener;
 
-import com.zenavia.zenBattle.game.Game;
-import com.zenavia.zenBattle.game.GameManager;
-import com.zenavia.zenBattle.game.GameState;
-import com.zenavia.zenBattle.game.Team;
+import com.zenavia.zenBattle.game.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,12 +17,12 @@ import java.util.UUID;
 
 public class BeaconDamageListener implements Listener {
 
-    private static final int DAMAGE_PER_HIT = 1;
-
     private final GameManager gameManager;
+    private final GameSettings settings;
 
-    public BeaconDamageListener(GameManager gameManager) {
+    public BeaconDamageListener(GameManager gameManager, GameSettings settings) {
         this.gameManager = gameManager;
+        this.settings = settings;
     }
 
     @EventHandler
@@ -50,7 +47,7 @@ public class BeaconDamageListener implements Listener {
             return;
         }
 
-        boolean destroyed = target.damageBeacon(DAMAGE_PER_HIT);
+        boolean destroyed = target.damageBeacon(settings.damagePerHit());
         player.playSound(clicked, Sound.BLOCK_ANVIL_LAND, 1f, 1.5f); // feedback provisoire, à styliser plus tard
         Bukkit.broadcast(Component.text("Beacon " + target.getName() + " : " + target.getBeaconHealth() + " PV restants"));
 

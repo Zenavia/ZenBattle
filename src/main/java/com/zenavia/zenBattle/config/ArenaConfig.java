@@ -1,5 +1,13 @@
 package com.zenavia.zenBattle.config;
 
-public class ArenaConfig {
-    // données d'une partie (spawn, beacons, blocs)
-}
+import org.bukkit.Location;
+
+public record ArenaConfig(
+        String name,
+        Location spawnTeamA,
+        Location spawnTeamB,
+        Location beaconTeamA,
+        Location beaconTeamB,
+        Location lobbySpawn
+
+) { }

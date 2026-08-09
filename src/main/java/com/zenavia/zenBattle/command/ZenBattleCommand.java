@@ -14,11 +14,9 @@ import java.util.logging.Logger;
 
 public class ZenBattleCommand implements CommandExecutor {
     private final GameManager gameManager;
-    private final ArenaManager arenaManager;
 
-    public ZenBattleCommand(GameManager gameManager, ArenaManager arenaManager) {
+    public ZenBattleCommand(GameManager gameManager) {
         this.gameManager = gameManager;
-        this.arenaManager = arenaManager;
     }
 
     @Override
