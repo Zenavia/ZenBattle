@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class GameManager {
     // gestion du cycle de vie / plusieurs arènes
-    private static final int MIN_PLAYERS_TO_START = 1;
+    private static final int MIN_PLAYERS_TO_START = 2;
     private static final int COUNTDOWN_SECONDS = 10;
     private static final int END_DELAY_SECONDS = 5;
 
@@ -45,6 +45,9 @@ public class GameManager {
 
         player.teleport(target == teamA ? arena.getSpawnTeamA() : arena.getSpawnTeamB());
         player.sendMessage("Tu as rejoint l'équipe " + target.getName());
+        if(allPlayers().size() < MIN_PLAYERS_TO_START){
+            Bukkit.broadcast(Component.text(allPlayers().size() + "/" + MIN_PLAYERS_TO_START + " joueurs dans ZenBattle"));
+        }
 
         checkStartConditions();
     }
