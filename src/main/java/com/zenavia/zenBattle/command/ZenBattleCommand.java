@@ -31,6 +31,10 @@ public class ZenBattleCommand implements CommandExecutor {
             return true;
         }
 
+        if(args[0].equalsIgnoreCase("list")) {
+            gameManager.getGame().getTeamA();
+        }
+
         return true;
     }
 }

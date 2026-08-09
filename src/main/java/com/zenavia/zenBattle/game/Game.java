@@ -36,4 +36,16 @@ public class Game {
         if (!teamB.isBeaconAlive()) return teamA;
         return null;
     }
+
+    public int totalPlayers(){
+        return teamA.getPlayers().size() + teamB.getPlayers().size();
+    }
+
+    public int totalPlayersTeamA(){
+        return teamA.getPlayers().size();
+    }
+
+    public int totalPlayersTeamB(){
+        return teamB.getPlayers().size();
+    }
 }

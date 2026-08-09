@@ -5,7 +5,6 @@ import java.util.Set;
 import java.util.UUID;
 
 public class Team {
-    // rouge / bleu + joueurs + beacons
     private final String name;
     private final Set<UUID> players = new HashSet<>();
     private boolean beaconAlive = true;
