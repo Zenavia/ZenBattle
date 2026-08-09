@@ -2,6 +2,7 @@ package com.zenavia.zenBattle.config;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
@@ -63,13 +64,24 @@ public class ConfigManager {
         Location beaconA = readLocation(yaml, "beacon-team-a");
         Location beaconB = readLocation(yaml, "beacon-team-b");
         Location lobby = readLocation(yaml, "lobby-spawn");
+        Location corner1 = readLocation(yaml, "barrier-corner-1");
+        Location corner2 = readLocation(yaml, "barrier-corner-2");
+        Material barrierMaterial = Material.TINTED_GLASS;
+        String materialName = yaml.getString("barrier-material");
+        if (materialName != null) {
+            try {
+                barrierMaterial = Material.valueOf(materialName.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                plugin.getLogger().warning("Matériau de barrière invalide dans " + file.getName() + " : " + materialName);
+            }
+        }
 
         if (spawnA == null || spawnB == null || beaconA == null || beaconB == null || lobby == null) {
             plugin.getLogger().log(Level.WARNING, "Arène invalide, coordonnées manquantes : " + file.getName());
             return null;
         }
 
-        return new ArenaConfig(name, spawnA, spawnB, beaconA, beaconB, lobby);
+        return new ArenaConfig(name, spawnA, spawnB, beaconA, beaconB, lobby, corner1, corner2, barrierMaterial);
     }
 
     private Location readLocation(YamlConfiguration yaml, String path) {

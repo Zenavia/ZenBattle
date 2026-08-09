@@ -28,7 +28,7 @@ public class ArenaManager {
 
         ArenaConfig cfg = arenas.getFirst();
         arena = new Arena(cfg.name(), cfg.spawnTeamA(), cfg.spawnTeamB(),
-                cfg.beaconTeamA(), cfg.beaconTeamB(), cfg.lobbySpawn());
+                cfg.beaconTeamA(), cfg.beaconTeamB(), cfg.lobbySpawn(), cfg.barrierCorner1(), cfg.barrierCorner2(), cfg.barrierMaterial());
 
         return Optional.of(arena);
     }
