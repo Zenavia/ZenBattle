@@ -1,9 +1,6 @@
 package com.zenavia.zenBattle.listener;
 
-import com.zenavia.zenBattle.config.BeaconHealthBarManager;
-import com.zenavia.zenBattle.config.GameSettings;
-import com.zenavia.zenBattle.config.MessageManager;
-import com.zenavia.zenBattle.config.TitleManager;
+import com.zenavia.zenBattle.config.*;
 import com.zenavia.zenBattle.game.*;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
@@ -22,16 +19,12 @@ import java.util.Map;
 public class BeaconDamageListener implements Listener {
 
     private final GameManager gameManager;
-    private final MessageManager messageManager;
-    private final TitleManager titleManager;
-    private final BeaconHealthBarManager beaconHealthBarManager;
+    private final GameFeedback feedback;
     private final GameSettings settings;
 
-    public BeaconDamageListener(GameManager gameManager, MessageManager messageManager, TitleManager titleManager, BeaconHealthBarManager beaconHealthBarManager, GameSettings settings) {
+    public BeaconDamageListener(GameManager gameManager, GameFeedback feedback, GameSettings settings) {
         this.gameManager = gameManager;
-        this.messageManager = messageManager;
-        this.titleManager = titleManager;
-        this.beaconHealthBarManager = beaconHealthBarManager;
+        this.feedback = feedback;
         this.settings = settings;
     }
 
@@ -53,26 +46,17 @@ public class BeaconDamageListener implements Listener {
         Team playerTeam = game.getTeamOfPlayer(player.getUniqueId());
         if (playerTeam == null) return; // spectateur/hors partie
         if (playerTeam == target) {
-            player.playSound(clicked, Sound.ENTITY_VILLAGER_NO, 1f, 1.5f);
-            player.sendMessage(messageManager.get("team.own-beacon-denied"));
+            feedback.ownBeaconDenied(player);
             return;
         }
 
         boolean destroyed = target.damageBeacon(settings.damagePerHit());
-        beaconHealthBarManager.update(target, settings.beaconMaxHealth(), Bukkit.getOnlinePlayers());
-
-        float pitch = 1.0f + (1.0f - (float) target.getBeaconHealth() / settings.beaconMaxHealth());
-        player.playSound(clicked, Sound.ENTITY_WITHER_HURT, 1f, pitch);
-        Bukkit.broadcast(messageManager.get("game.beacon-damaged", Map.of("team", target.getName(), "health", String.valueOf(target.getBeaconHealth()))));
+        feedback.beaconHit(target, clicked);
 
         if (destroyed) {
             game.onBeaconDestroyed(target);
             Team winner = game.getOtherTeam(target);
-            Bukkit.broadcast(messageManager.get("game.victory", Map.of("team", winner.getName())));
-
-            titleManager.showToAll(Bukkit.getOnlinePlayers(),
-                    messageManager.get("game.victory-title"),
-                    messageManager.get("game.victory-subtitle", Map.of("team", winner.getName())));
+            feedback.victory(winner, target.getBeaconLocation());
 
             gameManager.onGameEnding();
         }

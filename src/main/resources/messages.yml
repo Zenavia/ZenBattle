@@ -14,6 +14,7 @@ game:
   no-arena: "<prefix><red>Aucune arène n'est configurée pour le moment.</red>"
   game-already-started: "<prefix><red>La partie a déjà commencé !</red>"
   back-lobby: "<prefix><green>Partie terminée, retour au lobby.</green>"
+  victory: "<prefix><gold><bold>L'équipe {team} a gagné !</bold></gold>"
   victory-title: "<gold><bold>VICTOIRE</bold></gold>"
   victory-subtitle: "<gray>Équipe {team}</gray>"
   starting-title: "<green><bold>GO !</bold></green>"

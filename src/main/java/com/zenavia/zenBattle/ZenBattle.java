@@ -2,13 +2,11 @@ package com.zenavia.zenBattle;
 
 import com.zenavia.zenBattle.arena.ArenaManager;
 import com.zenavia.zenBattle.command.ZenBattleCommand;
-import com.zenavia.zenBattle.config.BeaconHealthBarManager;
-import com.zenavia.zenBattle.config.ConfigManager;
-import com.zenavia.zenBattle.config.MessageManager;
-import com.zenavia.zenBattle.config.TitleManager;
+import com.zenavia.zenBattle.config.*;
 import com.zenavia.zenBattle.game.GameManager;
 import com.zenavia.zenBattle.listener.BeaconBreakListener;
 import com.zenavia.zenBattle.listener.BeaconDamageListener;
+import com.zenavia.zenBattle.listener.FriendlyFireListener;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,12 +25,15 @@ public final class ZenBattle extends JavaPlugin {
 
         MessageManager messageManager = new MessageManager(this);
         TitleManager titleManager = new TitleManager();
-        BeaconHealthBarManager beaconHealthBarManager = new BeaconHealthBarManager();
+        BeaconHealthBarManager healthBarManager = new BeaconHealthBarManager();
+        GameFeedback feedback = new GameFeedback(messageManager, titleManager, healthBarManager, configManager.getSettings());
 
         ArenaManager arenaManager = new ArenaManager(configManager, getLogger());
-        GameManager gameManager = new GameManager(this, arenaManager, configManager.getSettings(), messageManager, titleManager, beaconHealthBarManager);
-        getServer().getPluginManager().registerEvents(new BeaconBreakListener(gameManager), this);
-        getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, messageManager, titleManager, beaconHealthBarManager, configManager.getSettings()), this);
+        GameManager gameManager = new GameManager(this, arenaManager, configManager.getSettings(), feedback);
+
+        getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager.getSettings()), this);
+        getServer().getPluginManager().registerEvents(new FriendlyFireListener(gameManager), this);
+
         Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager));
     }
 
