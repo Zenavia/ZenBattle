@@ -5,6 +5,7 @@ import com.zenavia.zenBattle.command.ReloadCommand;
 import com.zenavia.zenBattle.command.ZenBattleCommand;
 import com.zenavia.zenBattle.config.*;
 import com.zenavia.zenBattle.config.ConfigManager;
+import com.zenavia.zenBattle.game.BarrierManager;
 import com.zenavia.zenBattle.game.GameManager;
 import com.zenavia.zenBattle.kits.KitManager;
 import com.zenavia.zenBattle.kits.KitMenu;
@@ -31,12 +32,13 @@ public final class ZenBattle extends JavaPlugin {
         TitleManager titleManager = new TitleManager();
         BeaconHealthBarManager healthBarManager = new BeaconHealthBarManager();
         GameFeedback feedback = new GameFeedback(messageManager, titleManager, healthBarManager, configManager.getSettings());
+        BarrierManager barrierManager = new BarrierManager(this);
 
         KitMenu kitMenu = new KitMenu();
         KitManager kitManager = new KitManager();
 
         ArenaManager arenaManager = new ArenaManager(configManager, getLogger());
-        GameManager gameManager = new GameManager(this, arenaManager, configManager, feedback, kitManager, kitMenu);
+        GameManager gameManager = new GameManager(this, arenaManager, configManager, feedback, kitManager, kitMenu, barrierManager);
 
         getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager), this);
         getServer().getPluginManager().registerEvents(new FriendlyFireListener(gameManager), this);

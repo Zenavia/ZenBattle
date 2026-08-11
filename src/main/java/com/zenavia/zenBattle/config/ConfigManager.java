@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -68,6 +69,9 @@ public class ConfigManager {
         Location corner2 = readLocation(yaml, "barrier-corner-2");
         Material barrierMaterial = Material.TINTED_GLASS;
         String materialName = yaml.getString("barrier-material");
+        List<Location> spawnPointsA = scanSpawnPoints(yaml, "spawn-zone-team-a-corner-1", "spawn-zone-team-a-corner-2", "spawn-marker-team-a");
+        List<Location> spawnPointsB = scanSpawnPoints(yaml, "spawn-zone-team-b-corner-1", "spawn-zone-team-b-corner-2", "spawn-marker-team-b");
+
         if (materialName != null) {
             try {
                 barrierMaterial = Material.valueOf(materialName.toUpperCase());
@@ -81,7 +85,7 @@ public class ConfigManager {
             return null;
         }
 
-        return new ArenaConfig(name, spawnA, spawnB, beaconA, beaconB, lobby, corner1, corner2, barrierMaterial);
+        return new ArenaConfig(name, spawnA, spawnB, beaconA, beaconB, lobby, corner1, corner2, barrierMaterial, spawnPointsA, spawnPointsB);
     }
 
     private Location readLocation(YamlConfiguration yaml, String path) {
@@ -98,6 +102,45 @@ public class ConfigManager {
         float yaw = (float) yaml.getDouble(path + ".yaw", 0);
         float pitch = (float) yaml.getDouble(path + ".pitch", 0);
         return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    private List<Location> scanSpawnPoints(YamlConfiguration yaml, String cornerKey1, String cornerKey2, String markerKey) {
+        List<Location> found = new ArrayList<>();
+
+        Location corner1 = readLocation(yaml, cornerKey1);
+        Location corner2 = readLocation(yaml, cornerKey2);
+        String materialName = yaml.getString(markerKey);
+        if (corner1 == null || corner2 == null || materialName == null) return found;
+
+        Material marker;
+        try {
+            marker = Material.valueOf(materialName.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            plugin.getLogger().warning("Matériau de spawn invalide : " + materialName);
+            return found;
+        }
+
+        int minX = Math.min(corner1.getBlockX(), corner2.getBlockX());
+        int maxX = Math.max(corner1.getBlockX(), corner2.getBlockX());
+        int minY = Math.min(corner1.getBlockY(), corner2.getBlockY());
+        int maxY = Math.max(corner1.getBlockY(), corner2.getBlockY());
+        int minZ = Math.min(corner1.getBlockZ(), corner2.getBlockZ());
+        int maxZ = Math.max(corner1.getBlockZ(), corner2.getBlockZ());
+        World world = corner1.getWorld();
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    Block block = world.getBlockAt(x, y, z);
+                    if (block.getType() == marker) {
+                        found.add(block.getLocation().add(0.5, 1, 0.5));
+                    }
+                }
+            }
+        }
+
+        plugin.getLogger().info(found.size() + " points de spawn trouvés pour le marqueur " + marker);
+        return found;
     }
 
     public void reload() {

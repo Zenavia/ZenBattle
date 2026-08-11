@@ -2,12 +2,16 @@ package com.zenavia.zenBattle.config;
 
 import com.zenavia.zenBattle.game.Game;
 import com.zenavia.zenBattle.game.Team;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
+import java.time.Duration;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -50,14 +54,22 @@ public class GameFeedback {
     }
 
     public void countdownStarted(int seconds) {
-        Bukkit.broadcast(messages.get("game.countdown-start", Map.of("seconds", String.valueOf(seconds))));
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            player.playSound(player.getLocation(), Sound.UI_BUTTON_CLICK, 1f, 1f);
+        }
+
+        titles.showToAll(Bukkit.getOnlinePlayers(),
+                Component.text(""),
+                messages.get("game.countdown-start", Map.of("seconds", String.valueOf(seconds))),
+                false);
     }
 
     public void gameStarted() {
         Bukkit.broadcast(messages.get("game.starting"));
         titles.showToAll(Bukkit.getOnlinePlayers(),
                 messages.get("game.starting-title"),
-                messages.get("game.starting-subtitle"));
+                messages.get("game.starting-subtitle"),
+                true);
     }
 
     public void beaconHit(Team target, Location hitLocation) {
@@ -77,10 +89,15 @@ public class GameFeedback {
 
         titles.showToAll(Bukkit.getOnlinePlayers(),
                 messages.get("game.victory-title"),
-                messages.get("game.victory-subtitle", Map.of("team", winner.getName())));
+                messages.get("game.victory-subtitle", Map.of("team", winner.getName())),
+                true);
 
         beaconLocation.getWorld().playSound(beaconLocation, Sound.ENTITY_ENDER_DRAGON_GROWL, 1f, 1f);
         beaconLocation.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, beaconLocation.toCenterLocation(), 40, 0.5, 0.5, 0.5, 0.2);
+    }
+
+    public void gameStoped(){
+        Bukkit.broadcast(Component.text("Partie arrêtée par un administrateur.", NamedTextColor.RED));
     }
 
     public void gameReset() {

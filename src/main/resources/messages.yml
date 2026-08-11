@@ -5,7 +5,7 @@ team:
   own-beacon-denied: "<prefix><red>Tu ne peux pas attaquer ton propre beacon !</red>"
 
 game:
-  countdown-start: "<prefix><yellow>La partie démarre dans <bold>{seconds}s</bold> !</yellow>"
+  countdown-start: "<prefix><yellow>Démarrage dans <bold>{seconds}s</bold> !</yellow>"
   not-enough-players: "<prefix><red>Pas assez de joueurs pour commencer la partie ! <gray>(</gray><white>{min-players}</white><gray>/</gray><yellow>{max-players}</yellow><gray>)</gray></red>"
   starting: "<prefix><green><bold>La partie commence !</bold></green>"
   beacon-damaged: "<prefix><gray>Beacon <yellow>{team}</yellow> : <red>{health}</red> PV restants</gray>"

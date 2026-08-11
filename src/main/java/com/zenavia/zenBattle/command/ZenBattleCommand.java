@@ -42,11 +42,13 @@ public class ZenBattleCommand implements CommandExecutor {
             return true;
         }
 
-        if(args[0].equalsIgnoreCase("list")) {
-            gameManager.getGame().getTeamA().getPlayers().forEach(uuid -> player.sendMessage("Team A: " + UUID.fromString(uuid.toString())));
-            gameManager.getGame().getTeamB().getPlayers().forEach(uuid -> player.sendMessage("Team B: " + UUID.fromString(uuid.toString())));
-            Logger.getLogger("ZenBattle").info("Team A: " + gameManager.getGame().getTeamA().getPlayers().toString());
-            return true;
+        if(args[0].equalsIgnoreCase("stop")){
+            if(!gameManager.getGame().getState().equals(GameState.PLAYING)){
+                player.sendMessage(Component.text("Aucune partie en cours.", NamedTextColor.RED));
+            }
+            if(player.hasPermission("zenbattle.stop")){
+                gameManager.stopGame();
+            }
         }
 
         if (args[0].equalsIgnoreCase("kit")) {

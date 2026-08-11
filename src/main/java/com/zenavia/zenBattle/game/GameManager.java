@@ -22,9 +22,10 @@ public class GameManager {
     private final Game game;
     private final KitManager kitManager;
     private final KitMenu kitMenu;
+    private final BarrierManager barrierManager;
     private Countdown countdown;
 
-    public GameManager(Plugin plugin, ArenaManager arenaManager, ConfigManager configManager, GameFeedback feedback, KitManager kitManager, KitMenu kitMenu) {
+    public GameManager(Plugin plugin, ArenaManager arenaManager, ConfigManager configManager, GameFeedback feedback, KitManager kitManager, KitMenu kitMenu, BarrierManager barrierManager) {
         this.plugin = plugin;
         this.arenaManager = arenaManager;
         this.configManager = configManager;
@@ -32,6 +33,7 @@ public class GameManager {
         this.game = new Game(new Team(configManager.getSettings().teamAName(), configManager), new Team(configManager.getSettings().teamBName(), configManager));
         this.kitManager = kitManager;
         this.kitMenu = kitMenu;
+        this.barrierManager = barrierManager;
     }
 
     public Game getGame() {
@@ -96,8 +98,8 @@ public class GameManager {
         }
         Arena arena = arenaOpt.get();
 
-        teleportTeamToSpawn(game.getTeamA(), arena.getSpawnTeamA());
-        teleportTeamToSpawn(game.getTeamB(), arena.getSpawnTeamB());
+        teleportTeamToSpawn(game.getTeamA(), arena.getSpawnPointsTeamA(), arena.getSpawnTeamA());
+        teleportTeamToSpawn(game.getTeamB(), arena.getSpawnPointsTeamB(), arena.getSpawnTeamB());
 
         game.getTeamA().setBeaconLocation(arena.getBeaconTeamA());
         game.getTeamB().setBeaconLocation(arena.getBeaconTeamB());
@@ -105,13 +107,22 @@ public class GameManager {
         breakBarrier(arena);
     }
 
-    private void teleportTeamToSpawn(Team team, Location spawn) {
-        for (UUID uuid : team.getPlayers()) {
-            Player player = Bukkit.getPlayer(uuid);
-            if (player != null) {
-                player.teleport(spawn);
-                applyKit(player);
+    private void teleportTeamToSpawn(Team team, List<Location> spawnPoints, Location fallback) {
+        List<UUID> players = new ArrayList<>(team.getPlayers());
+
+        for (int i = 0; i < players.size(); i++) {
+            Player player = Bukkit.getPlayer(players.get(i));
+            if (player == null) continue;
+
+            Location spawn;
+            if (spawnPoints.isEmpty()) {
+                spawn = fallback; // sécurité si aucun marqueur trouvé sur la map
+            } else {
+                spawn = spawnPoints.get(i % spawnPoints.size()); // round-robin
             }
+
+            player.teleport(spawn);
+            applyKit(player);
         }
     }
 
@@ -163,58 +174,15 @@ public class GameManager {
     }
 
     private void breakBarrier(Arena arena) {
-        Location corner1 = arena.getBarrierCorner1();
-        Location corner2 = arena.getBarrierCorner2();
-        Material material = arena.getBarrierMaterial();
-        if (corner1 == null || corner2 == null || material == null) return; // pas configuré, on ignore
-
-        int minX = Math.min(corner1.getBlockX(), corner2.getBlockX());
-        int maxX = Math.max(corner1.getBlockX(), corner2.getBlockX());
-        int minY = Math.min(corner1.getBlockY(), corner2.getBlockY());
-        int maxY = Math.max(corner1.getBlockY(), corner2.getBlockY());
-        int minZ = Math.min(corner1.getBlockZ(), corner2.getBlockZ());
-        int maxZ = Math.max(corner1.getBlockZ(), corner2.getBlockZ());
-        World world = corner1.getWorld();
-
-        int brokenCount = 0;
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    Block block = world.getBlockAt(x, y, z);
-                    if (block.getType() != material) continue; // ne touche que le bon type
-                    block.setType(Material.AIR);
-                    brokenCount++;
-                }
-            }
-        }
-
-        if (brokenCount == 0) return; // rien trouvé, pas de son/particule inutile
-
-        Location center = corner1.clone().add(corner2).multiply(0.5);
-        world.playSound(center, Sound.ENTITY_ENDER_DRAGON_GROWL, 1f, 0.7f);
-        world.spawnParticle(Particle.EXPLOSION, center, 5, 1, 1, 1, 0.1);
+        barrierManager.breakBarrier(arena.getBarrierCorner1(), arena.getBarrierCorner2(), arena.getBarrierMaterial());
     }
 
     private void rebuildBarrier(Arena arena) {
-        Location corner1 = arena.getBarrierCorner1();
-        Location corner2 = arena.getBarrierCorner2();
-        Material material = arena.getBarrierMaterial();
-        if (corner1 == null || corner2 == null || material == null) return;
+        barrierManager.rebuildBarrier(arena.getBarrierCorner1(), arena.getBarrierCorner2(), arena.getBarrierMaterial());
+    }
 
-        int minX = Math.min(corner1.getBlockX(), corner2.getBlockX());
-        int maxX = Math.max(corner1.getBlockX(), corner2.getBlockX());
-        int minY = Math.min(corner1.getBlockY(), corner2.getBlockY());
-        int maxY = Math.max(corner1.getBlockY(), corner2.getBlockY());
-        int minZ = Math.min(corner1.getBlockZ(), corner2.getBlockZ());
-        int maxZ = Math.max(corner1.getBlockZ(), corner2.getBlockZ());
-        World world = corner1.getWorld();
-
-        for (int x = minX; x <= maxX; x++) {
-            for (int y = minY; y <= maxY; y++) {
-                for (int z = minZ; z <= maxZ; z++) {
-                    world.getBlockAt(x, y, z).setType(material);
-                }
-            }
-        }
+    public void stopGame() {
+        this.resetGame();
+        feedback.gameStoped();
     }
 }

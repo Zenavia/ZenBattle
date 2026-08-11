@@ -6,7 +6,7 @@ description: Plugin pour le serveur Zenavia, minijeu simple de destruction de Be
 author: HyGoww
 website: www.hygoww.fr
 prefix: ZENBATTLE
-depend: [My_Worlds]
+depend: [My_Worlds, FastAsyncWorldEdit]
 api-version: '26.2'
 load: POSTWORLD
 commands:
