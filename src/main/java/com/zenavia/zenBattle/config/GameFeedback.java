@@ -4,32 +4,29 @@ import com.zenavia.zenBattle.game.Game;
 import com.zenavia.zenBattle.game.Team;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-import java.time.Duration;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class GameFeedback {
     private final MessageManager messages;
     private final TitleManager titles;
     private final BeaconHealthBarManager healthBars;
-    private final GameSettings settings;
+    private final ConfigManager settings;
+    private final ActionBarManager actionBar;
 
     public GameFeedback(MessageManager messages, TitleManager titles,
-                        BeaconHealthBarManager healthBars, GameSettings settings) {
+                        BeaconHealthBarManager healthBars, ConfigManager settings, ActionBarManager actionBar) {
         this.messages = messages;
         this.titles = titles;
         this.healthBars = healthBars;
         this.settings = settings;
+        this.actionBar = actionBar;
     }
 
     public void playerJoined(Player player, Team team) {
@@ -46,7 +43,7 @@ public class GameFeedback {
     }
 
     public void notEnoughPlayer(Game game) {
-        Bukkit.broadcast(messages.get("game.not-enough-players", Map.of("min-players", allPlayers(game).toString(), "max-players", String.valueOf(settings.minPlayersToStart()))));
+        Bukkit.broadcast(messages.get("game.not-enough-players", Map.of("min-players", allPlayers(game).toString(), "max-players", String.valueOf(settings.getSettings().minPlayersToStart()))));
     }
 
     public void ownBeaconDenied(Player player) {
@@ -72,9 +69,9 @@ public class GameFeedback {
                 true);
     }
 
-    public void beaconHit(Team target, Location hitLocation) {
-        int maxHealth = settings.beaconMaxHealth();
-        healthBars.update(target, maxHealth, Bukkit.getOnlinePlayers());
+    public void beaconHit(Team target, Location hitLocation, List<Player> viewers) {
+        int maxHealth = settings.getSettings().beaconMaxHealth();
+        healthBars.update(target, maxHealth, viewers);
 
         Bukkit.broadcast(messages.get("game.beacon-damaged",
                 Map.of("team", target.getName(), "health", String.valueOf(target.getBeaconHealth()))));

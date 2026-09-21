@@ -19,10 +19,12 @@ import java.util.logging.Logger;
 public class ZenBattleCommand implements CommandExecutor {
     private final GameManager gameManager;
     private final KitMenu kitMenu;
+    private final AdminCommand adminCommand;
 
-    public ZenBattleCommand(GameManager gameManager, KitMenu kitMenu) {
+    public ZenBattleCommand(GameManager gameManager, KitMenu kitMenu, AdminCommand adminCommand) {
         this.gameManager = gameManager;
         this.kitMenu = kitMenu;
+        this.adminCommand = adminCommand;
     }
 
     @Override
@@ -42,13 +44,9 @@ public class ZenBattleCommand implements CommandExecutor {
             return true;
         }
 
-        if(args[0].equalsIgnoreCase("stop")){
-            if(!gameManager.getGame().getState().equals(GameState.PLAYING)){
-                player.sendMessage(Component.text("Aucune partie en cours.", NamedTextColor.RED));
-            }
-            if(player.hasPermission("zenbattle.stop")){
-                gameManager.stopGame();
-            }
+        if(args[0].equalsIgnoreCase("admin")){
+            adminCommand.handle(player, args);
+            return true;
         }
 
         if (args[0].equalsIgnoreCase("kit")) {

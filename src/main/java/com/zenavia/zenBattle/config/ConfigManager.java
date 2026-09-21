@@ -22,7 +22,7 @@ public class ConfigManager {
     }
 
     public void loadAll() {
-        plugin.saveDefaultConfig(); // copie config.yml des resources si absent
+        plugin.saveDefaultConfig();
         plugin.reloadConfig();
 
         var config = plugin.getConfig();
@@ -145,5 +145,23 @@ public class ConfigManager {
 
     public void reload() {
         loadAll();
+    }
+
+    public void setMinPlayersToStart(int value) {
+        this.settings = settings.withMinPlayersToStart(value);
+        plugin.getConfig().set("game.min-players-to-start", value);
+        plugin.saveConfig();
+    }
+
+    public void setBeaconMaxHealth(int value) {
+        this.settings = settings.withBeaconMaxHealth(value);
+        plugin.getConfig().set("game.beacon-max-health", value);
+        plugin.saveConfig();
+    }
+
+    public void setDamagePerHit(int value) {
+        this.settings = settings.withDamagePerHit(value);
+        plugin.getConfig().set("game.damage-per-hit", value);
+        plugin.saveConfig();
     }
 }

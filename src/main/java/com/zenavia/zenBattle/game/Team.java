@@ -1,11 +1,11 @@
 package com.zenavia.zenBattle.game;
 
 import com.zenavia.zenBattle.config.ConfigManager;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class Team {
     private final String name;
@@ -54,6 +54,13 @@ public class Team {
     }
 
     public int getBeaconHealth() { return beaconHealth; }
+
+    public List<Player> getOnlinePlayers() {
+        return players.stream()
+                .map(Bukkit::getPlayer)
+                .filter(Objects::nonNull)
+                .toList();
+    }
 
     public boolean damageBeacon(int amount) {
         if (!beaconAlive) return false;

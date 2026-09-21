@@ -1,6 +1,7 @@
 package com.zenavia.zenBattle;
 
 import com.zenavia.zenBattle.arena.ArenaManager;
+import com.zenavia.zenBattle.command.AdminCommand;
 import com.zenavia.zenBattle.command.ReloadCommand;
 import com.zenavia.zenBattle.command.ZenBattleCommand;
 import com.zenavia.zenBattle.config.*;
@@ -31,7 +32,8 @@ public final class ZenBattle extends JavaPlugin {
         MessageManager messageManager = new MessageManager(this);
         TitleManager titleManager = new TitleManager();
         BeaconHealthBarManager healthBarManager = new BeaconHealthBarManager();
-        GameFeedback feedback = new GameFeedback(messageManager, titleManager, healthBarManager, configManager.getSettings());
+        ActionBarManager actionBarManager = new ActionBarManager(messageManager);
+        GameFeedback feedback = new GameFeedback(messageManager, titleManager, healthBarManager, configManager, actionBarManager);
         BarrierManager barrierManager = new BarrierManager(this);
 
         KitMenu kitMenu = new KitMenu();
@@ -39,12 +41,13 @@ public final class ZenBattle extends JavaPlugin {
 
         ArenaManager arenaManager = new ArenaManager(configManager, getLogger());
         GameManager gameManager = new GameManager(this, arenaManager, configManager, feedback, kitManager, kitMenu, barrierManager);
+        AdminCommand adminCommand = new AdminCommand(gameManager, configManager);
 
         getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager), this);
         getServer().getPluginManager().registerEvents(new FriendlyFireListener(gameManager), this);
         getServer().getPluginManager().registerEvents(new KitMenuListener(kitMenu, kitManager), this);
 
-        Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager, kitMenu));
+        Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager, kitMenu, adminCommand));
         Objects.requireNonNull(getCommand("zbreload")).setExecutor(new ReloadCommand(this, configManager, messageManager, gameManager));
     }
 

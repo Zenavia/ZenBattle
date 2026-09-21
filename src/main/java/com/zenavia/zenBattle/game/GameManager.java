@@ -181,8 +181,24 @@ public class GameManager {
         barrierManager.rebuildBarrier(arena.getBarrierCorner1(), arena.getBarrierCorner2(), arena.getBarrierMaterial());
     }
 
-    public void stopGame() {
-        this.resetGame();
-        feedback.gameStoped();
+    public void forceStart() {
+        this.startGame();
+    }
+
+    public void forceEnd(String team) {
+        Team teamA = game.getTeamA();
+        if(teamA.getName().equalsIgnoreCase(team)){
+            teamA.destroyBeacon();
+            game.onBeaconDestroyed(teamA);
+            feedback.gameStoped();
+            this.resetGame();
+        }
+        Team teamB = game.getTeamB();
+        if(teamB.getName().equalsIgnoreCase(team)){
+            teamB.destroyBeacon();
+            game.onBeaconDestroyed(teamB);
+            feedback.gameStoped();
+            this.resetGame();
+        }
     }
 }

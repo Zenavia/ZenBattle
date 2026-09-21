@@ -51,7 +51,7 @@ public class BeaconDamageListener implements Listener {
         }
 
         boolean destroyed = target.damageBeacon(configManager.getSettings().damagePerHit());
-        feedback.beaconHit(target, clicked);
+        feedback.beaconHit(target, clicked, game.getOtherTeam(target).getOnlinePlayers());
 
         if (destroyed) {
             game.onBeaconDestroyed(target);
