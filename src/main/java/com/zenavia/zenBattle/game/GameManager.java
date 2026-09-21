@@ -100,6 +100,7 @@ public class GameManager {
 
         teleportTeamToSpawn(game.getTeamA(), arena.getSpawnPointsTeamA(), arena.getSpawnTeamA());
         teleportTeamToSpawn(game.getTeamB(), arena.getSpawnPointsTeamB(), arena.getSpawnTeamB());
+        setGamemodeForAllPlayers(game.getBothTeams());
 
         game.getTeamA().setBeaconLocation(arena.getBeaconTeamA());
         game.getTeamB().setBeaconLocation(arena.getBeaconTeamB());
@@ -123,6 +124,15 @@ public class GameManager {
 
             player.teleport(spawn);
             applyKit(player);
+        }
+    }
+
+    private void setGamemodeForAllPlayers(Set<UUID> team) {
+        for (UUID uuid : team) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                player.setGameMode(GameMode.ADVENTURE);
+            }
         }
     }
 

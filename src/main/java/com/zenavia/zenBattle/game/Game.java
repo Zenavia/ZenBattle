@@ -1,6 +1,9 @@
 package com.zenavia.zenBattle.game;
 
-import java.util.UUID;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.*;
 
 public class Game {
     // Instance de partie en cours
@@ -29,6 +32,12 @@ public class Game {
         return teamB;
     }
 
+    public Set<UUID> getBothTeams() {
+        Set<UUID> players = new HashSet<>(getTeamA().getPlayers());
+        players.addAll(getTeamB().getPlayers());
+        return players;
+    }
+
     public Team getOtherTeam(Team team) {
         return team == teamA ? teamB : teamA;
     }
@@ -39,11 +48,11 @@ public class Game {
         return null;
     }
 
-    public int totalPlayers(){
+    public int totalPlayers() {
         return teamA.getPlayers().size() + teamB.getPlayers().size();
     }
 
-    public void onBeaconDestroyed(Team destroyedTeam){
+    public void onBeaconDestroyed(Team destroyedTeam) {
         destroyedTeam.destroyBeacon();
         setState(GameState.ENDING);
     }
