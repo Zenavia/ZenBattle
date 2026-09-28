@@ -1,6 +1,5 @@
 package com.zenavia.zenBattle.arena;
 
-import com.zenavia.zenBattle.config.ArenaConfig;
 import com.zenavia.zenBattle.config.ConfigManager;
 
 import java.util.List;
@@ -18,7 +17,7 @@ public class ArenaManager {
     }
 
     public Optional<Arena> getOrCreateArena() {
-        if(arena != null) return Optional.of(arena);
+        if (arena != null) return Optional.of(arena);
 
         List<ArenaConfig> arenas = configManager.loadArenas();
         if (arenas.isEmpty()) {
@@ -27,8 +26,9 @@ public class ArenaManager {
         }
 
         ArenaConfig cfg = arenas.getFirst();
-        arena = new Arena(cfg.name(), cfg.spawnTeamA(), cfg.spawnTeamB(),
-                cfg.beaconTeamA(), cfg.beaconTeamB(), cfg.lobbySpawn(), cfg.barrierCorner1(), cfg.barrierCorner2(), cfg.barrierMaterial(), cfg.spawnPointsTeamA(), cfg.spawnPointsTeamB());
+        arena = new Arena(cfg.name(), cfg.spawnTeamA(), cfg.spawnTeamB(), cfg.beaconTeamA(), cfg.beaconTeamB(),
+                cfg.lobbySpawn(), cfg.barrierCorner1(), cfg.barrierCorner2(), cfg.barrierMaterial(),
+                cfg.spawnPointsTeamA(), cfg.spawnPointsTeamB(), cfg.teleportPointsTeamA(), cfg.teleportPointsTeamB());
 
         return Optional.of(arena);
     }

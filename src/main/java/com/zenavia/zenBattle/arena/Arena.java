@@ -1,9 +1,8 @@
 package com.zenavia.zenBattle.arena;
 
-import org.bukkit.Bukkit;
+import com.zenavia.zenBattle.teleport.TeamTeleportPoints;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class Arena {
     private final List<Location> spawnPointsTeamB;
 
     public Arena(String name, Location spawnTeamA, Location spawnTeamB,
-                 Location beaconTeamA, Location beaconTeamB, Location lobbySpawn, Location barrierCorner1, Location barrierCorner2, Material barrierMaterial, List<Location> spawnPointsTeamA, List<Location> spawnPointsTeamB) {
+                 Location beaconTeamA, Location beaconTeamB, Location lobbySpawn, Location barrierCorner1, Location barrierCorner2, Material barrierMaterial, List<Location> spawnPointsTeamA, List<Location> spawnPointsTeamB, TeamTeleportPoints teleportPointsTeamA, TeamTeleportPoints teleportPointsTeamB) {
         this.name = name;
         this.spawnTeamA = spawnTeamA;
         this.spawnTeamB = spawnTeamB;
@@ -34,6 +33,8 @@ public class Arena {
         this.barrierMaterial = barrierMaterial;
         this.spawnPointsTeamA = spawnPointsTeamA;
         this.spawnPointsTeamB = spawnPointsTeamB;
+        this.teleportPointsTeamA = teleportPointsTeamA;
+        this.teleportPointsTeamB = teleportPointsTeamB;
     }
 
     public String getName() {
@@ -65,4 +66,10 @@ public class Arena {
     public Material getBarrierMaterial() { return barrierMaterial; }
     public List<Location> getSpawnPointsTeamA() { return spawnPointsTeamA; }
     public List<Location> getSpawnPointsTeamB() { return spawnPointsTeamB; }
+
+    private final TeamTeleportPoints teleportPointsTeamA;
+    private final TeamTeleportPoints teleportPointsTeamB;
+
+    public TeamTeleportPoints getTeleportPointsTeamA() { return teleportPointsTeamA; }
+    public TeamTeleportPoints getTeleportPointsTeamB() { return teleportPointsTeamB; }
 }

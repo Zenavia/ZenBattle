@@ -1,5 +1,6 @@
-package com.zenavia.zenBattle.config;
+package com.zenavia.zenBattle.arena;
 
+import com.zenavia.zenBattle.teleport.TeamTeleportPoints;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -16,5 +17,7 @@ public record ArenaConfig(
         Location barrierCorner2,
         Material barrierMaterial,
         List<Location> spawnPointsTeamA,
-        List<Location> spawnPointsTeamB
+        List<Location> spawnPointsTeamB,
+        TeamTeleportPoints teleportPointsTeamA,
+        TeamTeleportPoints teleportPointsTeamB
 ) { }
