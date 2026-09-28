@@ -2,13 +2,16 @@ package com.zenavia.zenBattle.game;
 
 import com.zenavia.zenBattle.arena.Arena;
 import com.zenavia.zenBattle.arena.ArenaManager;
-import com.zenavia.zenBattle.config.*;
+import com.zenavia.zenBattle.config.ConfigManager;
+import com.zenavia.zenBattle.config.GameFeedback;
 import com.zenavia.zenBattle.kits.Kit;
 import com.zenavia.zenBattle.kits.KitManager;
 import com.zenavia.zenBattle.kits.KitMenu;
 import com.zenavia.zenBattle.util.Countdown;
-import org.bukkit.*;
-import org.bukkit.block.Block;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -100,6 +103,8 @@ public class GameManager {
 
         teleportTeamToSpawn(game.getTeamA(), arena.getSpawnPointsTeamA(), arena.getSpawnTeamA());
         teleportTeamToSpawn(game.getTeamB(), arena.getSpawnPointsTeamB(), arena.getSpawnTeamB());
+        equipHelmetOfTeam(game.getTeamA(), Material.BLUE_BANNER);
+        equipHelmetOfTeam(game.getTeamB(), Material.RED_BANNER);
         setGamemodeForAllPlayers(game.getBothTeams());
 
         game.getTeamA().setBeaconLocation(arena.getBeaconTeamA());
@@ -117,13 +122,22 @@ public class GameManager {
 
             Location spawn;
             if (spawnPoints.isEmpty()) {
-                spawn = fallback; // sécurité si aucun marqueur trouvé sur la map
+                spawn = fallback;
             } else {
                 spawn = spawnPoints.get(i % spawnPoints.size()); // round-robin
             }
 
             player.teleport(spawn);
             applyKit(player);
+        }
+    }
+
+    private void equipHelmetOfTeam(Team team, Material material) {
+        for (UUID uuid : team.getPlayers()) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player != null) {
+                player.getInventory().setHelmet(new org.bukkit.inventory.ItemStack(material));
+            }
         }
     }
 
@@ -210,5 +224,9 @@ public class GameManager {
             feedback.gameStoped();
             this.resetGame();
         }
+    }
+
+    public Arena getCurrentArena() {
+        return arenaManager.getOrCreateArena().orElse(null);
     }
 }

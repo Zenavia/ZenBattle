@@ -5,7 +5,6 @@ import com.zenavia.zenBattle.command.AdminCommand;
 import com.zenavia.zenBattle.command.ReloadCommand;
 import com.zenavia.zenBattle.command.ZenBattleCommand;
 import com.zenavia.zenBattle.config.*;
-import com.zenavia.zenBattle.config.ConfigManager;
 import com.zenavia.zenBattle.game.BarrierManager;
 import com.zenavia.zenBattle.game.GameManager;
 import com.zenavia.zenBattle.kits.KitManager;
@@ -13,6 +12,7 @@ import com.zenavia.zenBattle.kits.KitMenu;
 import com.zenavia.zenBattle.listener.BeaconDamageListener;
 import com.zenavia.zenBattle.listener.FriendlyFireListener;
 import com.zenavia.zenBattle.listener.KitMenuListener;
+import com.zenavia.zenBattle.teleport.TeleportPointManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -35,6 +35,7 @@ public final class ZenBattle extends JavaPlugin {
         ActionBarManager actionBarManager = new ActionBarManager(messageManager);
         GameFeedback feedback = new GameFeedback(messageManager, titleManager, healthBarManager, configManager, actionBarManager);
         BarrierManager barrierManager = new BarrierManager(this);
+        TeleportPointManager teleportPointManager = new TeleportPointManager(configManager);
 
         KitMenu kitMenu = new KitMenu();
         KitManager kitManager = new KitManager();
@@ -43,7 +44,7 @@ public final class ZenBattle extends JavaPlugin {
         GameManager gameManager = new GameManager(this, arenaManager, configManager, feedback, kitManager, kitMenu, barrierManager);
         AdminCommand adminCommand = new AdminCommand(gameManager, configManager);
 
-        getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager), this);
+        getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager, teleportPointManager, this), this);
         getServer().getPluginManager().registerEvents(new FriendlyFireListener(gameManager), this);
         getServer().getPluginManager().registerEvents(new KitMenuListener(kitMenu, kitManager), this);
 

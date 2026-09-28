@@ -1,9 +1,8 @@
 package com.zenavia.zenBattle.game;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 public class Game {
     // Instance de partie en cours

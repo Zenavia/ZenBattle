@@ -20,3 +20,4 @@ game:
   starting-title: "<green><bold>GO !</bold></green>"
   starting-subtitle: "<gray>Détruisez le beacon adverse</gray>"
   action-bar: "<gray>Équipe: <yellow>{team}</yellow> <dark_gray>|</dark_gray> <gray>Ton beacon: <red>{health} HP</red>"
+  repositioned: "<gray>Le beacon vous a dégagé de là</gray>"

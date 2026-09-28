@@ -1,5 +1,7 @@
 package com.zenavia.zenBattle.config;
 
+import org.bukkit.Material;
+
 public record GameSettings(
         int minPlayersToStart,
         int countdownSeconds,

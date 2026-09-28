@@ -114,4 +114,9 @@ public class GameFeedback {
         });
         return count;
     }
+
+    public void playerRepositioned(Player player) {
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 1f, 1f);
+        player.sendActionBar(messages.get("game.repositioned"));
+    }
 }

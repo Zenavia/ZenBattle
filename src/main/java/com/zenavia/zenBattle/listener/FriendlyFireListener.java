@@ -10,8 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
-import java.util.UUID;
-
 public class FriendlyFireListener implements Listener {
     private final GameManager gameManager;
 

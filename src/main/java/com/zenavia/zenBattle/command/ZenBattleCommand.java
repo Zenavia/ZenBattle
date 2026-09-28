@@ -1,7 +1,5 @@
 package com.zenavia.zenBattle.command;
 
-import com.zenavia.zenBattle.arena.Arena;
-import com.zenavia.zenBattle.arena.ArenaManager;
 import com.zenavia.zenBattle.game.GameManager;
 import com.zenavia.zenBattle.game.GameState;
 import com.zenavia.zenBattle.kits.KitMenu;
@@ -10,13 +8,14 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.UUID;
-import java.util.logging.Logger;
+import java.util.List;
 
-public class ZenBattleCommand implements CommandExecutor {
+public class ZenBattleCommand implements TabExecutor {
     private final GameManager gameManager;
     private final KitMenu kitMenu;
     private final AdminCommand adminCommand;
@@ -59,5 +58,22 @@ public class ZenBattleCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String @NotNull [] args) {
+        if (args.length == 1) {
+            return List.of("join", "admin", "kit");
+        }
+        if(args.length == 2 && args[0].equalsIgnoreCase("admin")) {
+            return List.of("setMinPlayers", "setBeaconHealth", "forceStart", "forceEnd", "restart");
+        }
+        if(args.length == 3 && args[2].equalsIgnoreCase("setMinPlayers")) {
+            return List.of("5");
+        }
+        if(args.length == 3 && args[2].equalsIgnoreCase("setBeaconHealth")) {
+            return List.of("200");
+        }
+        return List.of();
     }
 }

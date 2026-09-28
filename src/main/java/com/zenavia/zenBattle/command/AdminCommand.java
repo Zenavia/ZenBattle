@@ -125,11 +125,11 @@ public class AdminCommand {
 
     private void sendUsage(CommandSender sender) {
         sender.sendMessage("""
-            §cUsage:
+            §cCommandes admin:
             §7/zb admin setMinPlayers <nombre>
             §7/zb admin setBeaconHealth <valeur>
             §7/zb admin forceStart
-            §7/zb admin forceEnd
+            §7/zb admin forceEnd <team> - &oex: /zb admin forceEnd Bleu
             §7/zb admin restart""");
     }
 }
