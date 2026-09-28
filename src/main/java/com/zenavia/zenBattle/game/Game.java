@@ -1,6 +1,10 @@
 package com.zenavia.zenBattle.game;
 
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

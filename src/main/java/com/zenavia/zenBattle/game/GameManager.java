@@ -132,6 +132,21 @@ public class GameManager {
         }
     }
 
+    public void teleportPlayerToSpawn(Player player ,Team team, List<Location> spawnPoints, Location fallback){
+        Player playerUuid = Bukkit.getPlayer(player.getUniqueId());
+        if (playerUuid == null) return;
+
+        Location spawn;
+        if (spawnPoints.isEmpty()) {
+            spawn = fallback;
+        } else {
+            spawn = spawnPoints.get((int) (Math.random() * spawnPoints.size()));
+        }
+
+        playerUuid.teleport(spawn);
+        applyKit(playerUuid);
+    }
+
     private void equipHelmetOfTeam(Team team, Material material) {
         for (UUID uuid : team.getPlayers()) {
             Player player = Bukkit.getPlayer(uuid);

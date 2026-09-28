@@ -12,6 +12,7 @@ import com.zenavia.zenBattle.kits.KitMenu;
 import com.zenavia.zenBattle.listener.BeaconDamageListener;
 import com.zenavia.zenBattle.listener.FriendlyFireListener;
 import com.zenavia.zenBattle.listener.KitMenuListener;
+import com.zenavia.zenBattle.listener.PlayerDeathListener;
 import com.zenavia.zenBattle.teleport.TeleportPointManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,9 +45,11 @@ public final class ZenBattle extends JavaPlugin {
         GameManager gameManager = new GameManager(this, arenaManager, configManager, feedback, kitManager, kitMenu, barrierManager);
         AdminCommand adminCommand = new AdminCommand(gameManager, configManager);
 
+        // LISTENER
         getServer().getPluginManager().registerEvents(new BeaconDamageListener(gameManager, feedback, configManager, teleportPointManager, this), this);
         getServer().getPluginManager().registerEvents(new FriendlyFireListener(gameManager), this);
         getServer().getPluginManager().registerEvents(new KitMenuListener(kitMenu, kitManager), this);
+        getServer().getPluginManager().registerEvents(new PlayerDeathListener(gameManager, arenaManager), this);
 
         Objects.requireNonNull(getCommand("zb")).setExecutor(new ZenBattleCommand(gameManager, kitMenu, adminCommand));
         Objects.requireNonNull(getCommand("zbreload")).setExecutor(new ReloadCommand(this, configManager, messageManager, gameManager));
